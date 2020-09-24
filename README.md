@@ -7,3 +7,7 @@ style.css // Puedes copiar los estilos en tu hoja de estilos o enlazar esta hoja
 vue.js // está en la carpeta /js
 calculadora.js // está en la carpeta /componentes
 fa-all.min.css // Puedes usar el CDN de la página FontAwesome o usar ese archivo CSS que está dentro del repositorio, en este caso también deberás añadir la carpeta webfonts.
+
+Ejemplo:
+Aquí pueden ver el ejemplo:
+https://float-calc-example.netlify.app/
