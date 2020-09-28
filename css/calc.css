@@ -1,4 +1,4 @@
-.calculadora *, .calculadora {
+.calculadora :not(calc__btn--open-icon), .calculadora {
   box-sizing: border-box;
   font-family: "sans-serif";
 }
