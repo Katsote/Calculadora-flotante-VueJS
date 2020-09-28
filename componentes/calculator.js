@@ -409,7 +409,3 @@ Vue.component('calculadora', {
 
 
 })
-
-new Vue({
-	el: '#app',
-});
