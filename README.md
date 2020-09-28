@@ -1,15 +1,26 @@
 # Calculadora-flotante-VueJS
+It is a VueJS component easy to add to your code, which will allow you to have a floating calculator that you can move to any part of the screen where it is comfortable for you and will save the position when you change pages.
 
-<a href="https://github.com/Katsote/Calculadora-flotante-VueJS">Example</a>
+[Online example](https://github.com/Katsote/Calculadora-flotante-VueJS)
 
-Es un componente creado con el framework VueJS con la intención de que pueda ser utilizado en cualquier página web que lo requiera solo con copiar el archivo calculadora.js, junto con sus estilos que están en el archivo style.css, enlazarlo con tu archivo HTML y escribir <calculadora></calculadora>.
+### How to use
 
-Los archivos necesarios para usarla son:
+You can see a example to use in the [Index html file](index.html) of the repository
 
-style.css // Puedes copiar los estilos en tu hoja de estilos o enlazar esta hoja aparte, a tu proyecto
-vue.js // está en la carpeta /js
-calculadora.js // está en la carpeta /componentes
-fa-all.min.css // Puedes usar el CDN de la página FontAwesome o usar ese archivo CSS que está dentro del repositorio, en este caso también deberás añadir la carpeta webfonts.
+```
+//Font Awesome CDN example (You need to use your own FontAwesome CDN. This might not work)
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" crossorigin="anonymous">
 
-Ejemplo:
-Aquí pueden ver el ejemplo:
+//VueJs CDN
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+
+//Calculator archives
+<link rel="stylesheet" type="text/css" href="css/calc.css">
+<script type="text/javascript" src="componentes/calc.js"></script>
+```
+
+### Built with :hammer_and_wrench:
+
+[VueJs](https://es.vuejs.org/v2/guide/installation.html#CDN) - Used web framework
+
+[FontAwesome](https://fontawesome.com/start) - Calculator icon in open button
