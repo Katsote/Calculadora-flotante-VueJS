@@ -65,20 +65,18 @@ Vue.component('calculadora', {
 			this.posX = JSON.parse(localStorage.getItem('calcPos')).X;
 			this.posY = JSON.parse(localStorage.getItem('calcPos')).Y;
 
-			console.log(JSON.parse(localStorage.getItem('calcPos')));
-
-			// arreglamos todo
-			let calc = document.getElementsByClassName('calculadora');
-		    let width = calc[0].offsetWidth;
-		    let height = calc[0].offsetHeight;
-			
-			// Movemos a la posicion anterior
-			calc[0].style.left = this.posX;
-			calc[0].style.top = this.posY;
-			calc[0].style.right = 'unset';
-		    calc[0].style.bottom = 'unset';
-
-			console.log(calc[0]);
+			if(this.posX != '0px' && this.posY != '0px'){
+				// arreglamos todo
+				let calc = document.getElementsByClassName('calculadora');
+			    let width = calc[0].offsetWidth;
+			    let height = calc[0].offsetHeight;
+				
+				// Movemos a la posicion anterior
+				calc[0].style.left = this.posX;
+				calc[0].style.top = this.posY;
+				calc[0].style.right = 'unset';
+			    calc[0].style.bottom = 'unset';
+			}
 		}
 	},
 	updated(){
