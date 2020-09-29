@@ -62,13 +62,10 @@ Vue.component('calculadora', {
 	},
 	mounted(){
 		// Revisamos si es un movil o una pc
-		let Os = (navigator.appVersion.match(/Window/i)) || (navigator.appVersion.match(/Linux/i)) || (navigator.appVersion.match(/Mac/i));
+		let Os = (navigator.appVersion.match(/Mobile/i));
 
-		if(Os == 'null'){
+		if(Os != null){
 			this.move = false;
-		} else{
-			alert(navigator.appVersion)
-			alert(Os)
 		}
 		
 		// Buscamos la posicion guardada
@@ -89,8 +86,6 @@ Vue.component('calculadora', {
 					calc[0].style.top = this.posY;
 					calc[0].style.right = 'unset';
 				    calc[0].style.bottom = 'unset';
-
-				    alert('posicionando');
 				}
 			}
 		}
@@ -282,9 +277,6 @@ Vue.component('calculadora', {
 		},
 		leavemovemouse(){
 			if(this.move == true){
-
-				alert(this.move);
-
 			    // Desactivamos el movimiento
 				this.moving = false;
 				window.onmousemove = null;
@@ -303,8 +295,6 @@ Vue.component('calculadora', {
 			    this.mostrar.posX = calc[0].style.left;
 			    this.mostrar.posY = calc[0].style.top;
 				localStorage.setItem('calcPos', JSON.stringify({X: this.mostrar.posX, Y: this.mostrar.posY}));
-
-				alert('guardado');
 			} else{
 				this.mostrar.estado = !this.mostrar.estado;	
 			}
