@@ -279,6 +279,9 @@ Vue.component('calculadora', {
 		},
 		leavemovemouse(){
 			if(this.move == true){
+
+				alert(this.move);
+				
 			    // Desactivamos el movimiento
 				this.moving = false;
 				window.onmousemove = null;
