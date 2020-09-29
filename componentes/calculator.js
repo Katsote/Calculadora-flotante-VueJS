@@ -31,13 +31,13 @@ Vue.component('calculadora', {
 				</div>
 
 				<div class="calc__aside">
-					<button class="calc__btn--sign calc__btn" v-for="sign in signos" @click="addsign(sign)" v-if="sign == 'del'"><i class="fas fa-backspace"></i></button>
+					<button class="calc__btn--sign calc__btn" v-for="sign in signos" @click="addsign(sign)" v-if="sign == 'del'"><i class="calc__btn--sign-delete fas fa-backspace"></i></button>
 					<button class="calc__btn--sign calc__btn" v-for="sign in signos" @click="addsign(sign)" v-if="sign !== 'del'">{{sign}}</button>
 				</div>
 			</div>
 		</transition>
 
-		<button class="calc__btn--open" @mousedown="movemouse" @mouseup="leavemovemouse" @click="show_calc"><i class="fas fa-calculator calc__btn--open-icon"></i></button>
+		<button class="calc__btn--open" @mousedown="movemouse" @mouseup="leavemovemouse"><i class="fas fa-calculator calc__btn--open-icon"></i></button>
 	</div> 
 	`,
 	data () {
@@ -56,44 +56,57 @@ Vue.component('calculadora', {
 			},
 			valores: [],
 			spanWidth: '0',
-			move: false
+			moving: false,
+			move: true //Variable que declara si se va a poder mover la burbuja o no. Por defecto en PC es Si y en Tlf es No
 		}
 	},
 	mounted(){
-		if(localStorage.getItem('calcPos') != null){
-			// Obtenemos valores guardados
-			this.posX = JSON.parse(localStorage.getItem('calcPos')).X;
-			this.posY = JSON.parse(localStorage.getItem('calcPos')).Y;
+		// Revisamos si es un movil o una pc
+		let Os = (navigator.userAgent.match(/Window/i)) || (navigator.userAgent.match(/Linux/i)) || (navigator.userAgent.match(/Mac/i))
 
-			if(this.posX != '0px' && this.posY != '0px'){
-				// arreglamos todo
-				let calc = document.getElementsByClassName('calculadora');
-			    let width = calc[0].offsetWidth;
-			    let height = calc[0].offsetHeight;
-				
-				// Movemos a la posicion anterior
-				calc[0].style.left = this.posX;
-				calc[0].style.top = this.posY;
-				calc[0].style.right = 'unset';
-			    calc[0].style.bottom = 'unset';
+		if(Os == 'null'){
+			this.move = false;
+		}
+		
+		// Buscamos la posicion guardada
+		if(this.move == true){
+			if(localStorage.getItem('calcPos') != null){
+				// Obtenemos valores guardados
+				this.posX = JSON.parse(localStorage.getItem('calcPos')).X;
+				this.posY = JSON.parse(localStorage.getItem('calcPos')).Y;
+
+				if(this.posX != '0px' && this.posY != '0px'){
+					// arreglamos todo
+					let calc = document.getElementsByClassName('calculadora');
+				    let width = calc[0].offsetWidth;
+				    let height = calc[0].offsetHeight;
+					
+					// Movemos a la posicion anterior
+					calc[0].style.left = this.posX;
+					calc[0].style.top = this.posY;
+					calc[0].style.right = 'unset';
+				    calc[0].style.bottom = 'unset';
+				}
 			}
 		}
 	},
 	updated(){
-		let porcentajeX = 0;
-		let porcentajeY = 0;
+		if(this.move == true){
+			let porcentajeX = 0;
+			let porcentajeY = 0;
 
-	    let calc = document.getElementsByClassName('calculadora');
-	    let calc_in = document.getElementsByClassName('calc');
-	    let calc_btn = document.getElementsByClassName('calc__btn--open');
+		    let calc = document.getElementsByClassName('calculadora');
+		    let calc_in = document.getElementsByClassName('calc');
+		    let calc_btn = document.getElementsByClassName('calc__btn--open');
 
-	    if(calc_in.length > 0){
-			// 100 - el porcentaje que representa el tamaño del botón inferior para el tamaño total de la calculadora abierta de esa manera sabremos cuanto moverla 
-		    porcentajeX = (100 - (calc_btn[0].offsetWidth * 100) / this.mostrar.size.width).toFixed(2);
-		    porcentajeY = ((100 + (calc_btn[0].offsetHeight * 100) / this.mostrar.size.height) + 10).toFixed(2);
-	    }
+		    if(calc_in.length > 0){
+				// 100 - el porcentaje que representa el tamaño del botón inferior para el tamaño total de la calculadora abierta de esa manera sabremos cuanto moverla 
+			    porcentajeX = (100 - (calc_btn[0].offsetWidth * 100) / this.mostrar.size.width).toFixed(2);
+			    porcentajeY = ((100 + (calc_btn[0].offsetHeight * 100) / this.mostrar.size.height) + 10).toFixed(2);
+		    }
 
-		this.fixCalcScreen(porcentajeX, porcentajeY, calc_in, calc_btn, calc);
+			this.fixCalcScreen(porcentajeX, porcentajeY, calc_in, calc_btn, calc);
+		}
 	},
 	computed: {
 		getvalorinput(){
@@ -106,130 +119,54 @@ Vue.component('calculadora', {
 			return valor_input;
 		},
 		gettotal(){
-			let valor_aux = [];
-			let contador = 0;
-			let total = 0;
 
-			// Convertimos en un array que nos servirá de auxiliar
-			for (valor of this.valores){
+				let valor_aux = [];
+				let contador = 0;
+				let total = 0;
 
-				if(typeof valor == 'number'){
+				// Convertimos en un array que nos servirá de auxiliar
+				for (valor of this.valores){
 
-					// Si ya hay un número dentro es porque viene otro número más
-					if(typeof valor_aux[contador] == "number"){
-						valor_aux[contador] = (valor_aux[contador] * 10) + valor;
-					} else{ //Sino, solo añadimos los números normalmente
-						valor_aux[contador] = parseInt(valor, 10);
+					if(typeof valor == 'number'){
+
+						// Si ya hay un número dentro es porque viene otro número más
+						if(typeof valor_aux[contador] == "number"){
+							valor_aux[contador] = (valor_aux[contador] * 10) + valor;
+						} else{ //Sino, solo añadimos los números normalmente
+							valor_aux[contador] = parseInt(valor, 10);
+						}
+
+					} else {
+						valor_aux.push(valor);
+						contador = valor_aux.length;
 					}
-
-				} else {
-					valor_aux.push(valor);
-					contador = valor_aux.length;
 				}
-			}
 
+				// Comenzamos
+				let index_actual = 0;
+				let num1 = 0;
+				let num2 = 0;
 
-			// Comenzamos
-			let index_actual = 0;
-			let num1 = 0;
-			let num2 = 0;
+				// Empezamos a resolver por orden jerarquico
+				this.resolverOperaciones('*', valor_aux, index_actual);
+				this.resolverOperaciones('/', valor_aux, index_actual);
+				this.resolverOperaciones('+', valor_aux, index_actual);
+				this.resolverOperaciones('-', valor_aux, index_actual);
 
-			// NO REPETIR TANTO CODIGO, ARREGLAR
+				// Acomodamos el padding
+				let width = document.getElementsByClassName('calc__total')[0];
 
-			// Buscamos las multiplicaciones
-			for(i = 0; i < valor_aux.length && index_actual != '-1'; i++){
-				index_actual = valor_aux.findIndex(element => element == '*');
-
-				if(index_actual != '-1'){
-					num1 = valor_aux[index_actual - 1];
-					num2 = valor_aux[index_actual + 1];
-
-					valor_aux.splice(index_actual - 1, 2);
-
-					console.log(num1 + ", " + num2);
-
-					valor_aux[index_actual - 1] = num1 * num2;
-					console.log(valor_aux);
+				if(typeof width == 'undefined'){
+					this.spanWidth = 0;
 				} else{
-					console.log('adios');
+					this.spanWidth = width.offsetWidth + 26;
 				}
-			}
 
-
-			// Buscamos las divisiones
-			index_actual = 0;
-			for(i = 0; i < valor_aux.length && index_actual != '-1'; i++){
-				index_actual = valor_aux.findIndex(element => element == '/');
-
-				if(index_actual != '-1'){
-					num1 = valor_aux[index_actual - 1];
-					num2 = valor_aux[index_actual + 1];
-
-					valor_aux.splice(index_actual - 1, 2);
-
-					console.log(num1 + ", " + num2);
-
-					valor_aux[index_actual - 1] = num1 / num2;
-					console.log(valor_aux);
-				}
-			}
-
-			// Buscamos las sumas
-			index_actual = 0;
-			for(i = 0; i < valor_aux.length && index_actual != '-1'; i++){
-				index_actual = valor_aux.findIndex(element => element == '+');
-
-				if(index_actual != '-1'){
-					num1 = valor_aux[index_actual - 1];
-					num2 = valor_aux[index_actual + 1];
-
-					valor_aux.splice(index_actual - 1, 2);
-
-					console.log(num1 + ", " + num2);
-
-					valor_aux[index_actual - 1] = num1 + num2;
-					console.log(valor_aux);
-				}
-			}
-
-			// Buscamos las restas
-			index_actual = 0;
-			for(i = 0; i < valor_aux.length && index_actual != '-1'; i++){
-				index_actual = valor_aux.findIndex(element => element == '-');
-
-				if(index_actual != '-1'){
-					num1 = valor_aux[index_actual - 1];
-					num2 = valor_aux[index_actual + 1];
-
-					valor_aux.splice(index_actual - 1, 2);
-
-					console.log(num1 + ", " + num2);
-
-					valor_aux[index_actual - 1] = num1 - num2;
-					console.log(valor_aux);
-				}
-			}
-
-
-			// Acomodamos el padding
-			let width = document.getElementsByClassName('calc__total')[0];
-
-			if(typeof width == 'undefined'){
-				this.spanWidth = 0;
-			} else{
-				this.spanWidth = width.offsetWidth + 26;
-			}
-
-			// Devolvemos
-
-			return valor_aux[0];
-
+				// Devolvemos
+				return valor_aux[0];
 		}
 	},
 	methods: {
-		saludo(){
-			alert('hola');
-		},
 		addnumber(number){
 			this.valores.push(number);
 			this.checksign();
@@ -257,109 +194,110 @@ Vue.component('calculadora', {
 				return false;
 			}
 		},
-		show_calc(){
-			// this.move = false;
-			// window.onmousemove = null;
-			// console.log('1');
-		},
 		movemouse(){
-			// Guardamos el estado antes de moverlo
-			this.mostrar.aux = this.mostrar.estado;
+			if(this.move == true){
+				// Guardamos el estado antes de moverlo
+				this.mostrar.aux = this.mostrar.estado;
 
-			// Activamos el movimiento
-			this.move = true;
+				// Activamos el movimiento
+				this.moving = true;
 
-			// Guardamos la antigua posicion
-		    let calc = document.getElementsByClassName('calculadora');
-		    this.mostrar.posX = calc[0].style.left;
-		    this.mostrar.posY = calc[0].style.top;
+				// Guardamos la antigua posicion
+			    let calc = document.getElementsByClassName('calculadora');
+			    this.mostrar.posX = calc[0].style.left;
+			    this.mostrar.posY = calc[0].style.top;
 
-		    let calc_in = document.getElementsByClassName('calc');
-		    let calc_btn = document.getElementsByClassName('calc__btn--open');
+			    let calc_in = document.getElementsByClassName('calc');
+			    let calc_btn = document.getElementsByClassName('calc__btn--open');
 
-			if(this.move){
-			    // *Preparamos todo para acomodar la calculadora cuando no quepa* //
-				let porcentajeX = 0;
-				let porcentajeY = 0;
+				if(this.moving){
+				    // *Preparamos todo para acomodar la calculadora cuando no quepa* //
+					let porcentajeX = 0;
+					let porcentajeY = 0;
 
-			    if(calc_in.length > 0){
-    				// 100 - el porcentaje que representa el tamaño del botón inferior para el tamaño total de la calculadora abierta de esa manera sabremos cuanto moverla 
-    			    porcentajeX = (100 - (calc_btn[0].offsetWidth * 100) / calc_in[0].offsetWidth).toFixed(2);
-    			    porcentajeY = ((100 + (calc_btn[0].offsetHeight * 100) / calc_in[0].offsetHeight) + 10).toFixed(2);
-			    }
+				    if(calc_in.length > 0){
+	    				// 100 - el porcentaje que representa el tamaño del botón inferior para el tamaño total de la calculadora abierta de esa manera sabremos cuanto moverla 
+	    			    porcentajeX = (100 - (calc_btn[0].offsetWidth * 100) / calc_in[0].offsetWidth).toFixed(2);
+	    			    porcentajeY = ((100 + (calc_btn[0].offsetHeight * 100) / calc_in[0].offsetHeight) + 10).toFixed(2);
+				    }
 
-			    calcTransform = {X: 'translateX(0%)', Y: 'translateY(0%)'};
-			    
-			    moveX = 0; 
-			    moveY = 0;
+				    calcTransform = {X: 'translateX(0%)', Y: 'translateY(0%)'};
+				    
+				    moveX = 0; 
+				    moveY = 0;
 
-				window.onmousemove = function (){
-				    calc[0].style.right = 'unset';
-				    calc[0].style.bottom = 'unset';
+					window.onmousemove = function (){
+					    calc[0].style.right = 'unset';
+					    calc[0].style.bottom = 'unset';
 
-				    let x = window.event.clientX;
-				    let y = window.event.clientY;
-				    let width = calc[0].offsetWidth;
-				    let height = calc[0].offsetHeight;
+					    let x = window.event.clientX;
+					    let y = window.event.clientY;
+					    let width = calc[0].offsetWidth;
+					    let height = calc[0].offsetHeight;
 
-				    calc[0].style.top = (y - (height * 50 / 100)) + 'px';
-				    calc[0].style.left = (x - (width * 50 / 100)) + 'px';
+					    calc[0].style.top = (y - (height * 50 / 100)) + 'px';
+					    calc[0].style.left = (x - (width * 50 / 100)) + 'px';
 
-					if(calc_in.length > 0){
-					    if((parseInt(calc[0].style.left.substring(0, calc[0].style.left.length - 2)) < calc_in[0].offsetWidth) && !moveX){
-					    	
-					    	calcTransform.X = 'translateX('+porcentajeX+'%)';
+						if(calc_in.length > 0){
+						    if((parseInt(calc[0].style.left.substring(0, calc[0].style.left.length - 2)) < calc_in[0].offsetWidth) && !moveX){
+						    	
+						    	calcTransform.X = 'translateX('+porcentajeX+'%)';
 
-					    	moveX = 1;
-					    } else if(
-					    	!(parseInt(calc[0].style.left.substring(0, calc[0].style.left.length - 2)) < calc_in[0].offsetWidth) && //Para que no se repita
-					    	(calc_in[0].style.transform == calcTransform.X + " " + calcTransform.Y) && //Para confirmar que la condicion anterior se cumplió
-					    	moveX){ //Para que no se repita de nuevo la primera condición
-					    	
-					    	calcTransform.X = 'translateX(0%)';
+						    	moveX = 1;
+						    } else if(
+						    	!(parseInt(calc[0].style.left.substring(0, calc[0].style.left.length - 2)) < calc_in[0].offsetWidth) && //Para que no se repita
+						    	(calc_in[0].style.transform == calcTransform.X + " " + calcTransform.Y) && //Para confirmar que la condicion anterior se cumplió
+						    	moveX){ //Para que no se repita de nuevo la primera condición
+						    	
+						    	calcTransform.X = 'translateX(0%)';
 
-					    	moveX = 0;
-					    }
+						    	moveX = 0;
+						    }
 
-					    if((parseInt(calc[0].style.top.substring(0, calc[0].style.top.length - 2)) < calc_in[0].offsetHeight) && !moveY){
-					    	
-					    	calcTransform.Y = 'translateY('+porcentajeY+'%)';
+						    if((parseInt(calc[0].style.top.substring(0, calc[0].style.top.length - 2)) < calc_in[0].offsetHeight) && !moveY){
+						    	
+						    	calcTransform.Y = 'translateY('+porcentajeY+'%)';
 
-					    	moveY = 1;
-					    } else if(
-					    	!(parseInt(calc[0].style.top.substring(0, calc[0].style.top.length - 2)) < calc_in[0].offsetHeight) &&
-					    	(calc_in[0].style.transform == calcTransform.X + " " + calcTransform.Y) &&
-					    	moveY){
+						    	moveY = 1;
+						    } else if(
+						    	!(parseInt(calc[0].style.top.substring(0, calc[0].style.top.length - 2)) < calc_in[0].offsetHeight) &&
+						    	(calc_in[0].style.transform == calcTransform.X + " " + calcTransform.Y) &&
+						    	moveY){
 
-					    	calcTransform.Y = 'translateY(0%)';
+						    	calcTransform.Y = 'translateY(0%)';
 
-					    	moveY = 0;
-					    }
+						    	moveY = 0;
+						    }
 
-					    calc_in[0].style.transform = calcTransform.X + " " + calcTransform.Y;
+						    calc_in[0].style.transform = calcTransform.X + " " + calcTransform.Y;
+						}
 					}
 				}
 			}
 		},
 		leavemovemouse(){
-		    // Desactivamos el movimiento
-			this.move = false;
-			window.onmousemove = null;
+			if(this.move == true){
+			    // Desactivamos el movimiento
+				this.moving = false;
+				window.onmousemove = null;
 
-		    let calc = document.getElementsByClassName('calculadora');
+			    let calc = document.getElementsByClassName('calculadora');
 
-			// Verificamos si cambió de posición
-			if(this.mostrar.posX != calc[0].style.left &&
-				this.mostrar.posY != calc[0].style.top){
-				this.mostrar.estado = this.mostrar.aux;
-			} else {
+				// Verificamos si cambió de posición
+				if(this.mostrar.posX != calc[0].style.left &&
+					this.mostrar.posY != calc[0].style.top){
+					this.mostrar.estado = this.mostrar.aux;
+				} else {
+					this.mostrar.estado = !this.mostrar.estado;	
+				}
+
+				// Guardamos la nueva posicion
+			    this.mostrar.posX = calc[0].style.left;
+			    this.mostrar.posY = calc[0].style.top;
+				localStorage.setItem('calcPos', JSON.stringify({X: this.mostrar.posX, Y: this.mostrar.posY}));
+			} else{
 				this.mostrar.estado = !this.mostrar.estado;	
 			}
-
-			// Guardamos la nueva posicion
-		    this.mostrar.posX = calc[0].style.left;
-		    this.mostrar.posY = calc[0].style.top;
-			localStorage.setItem('calcPos', JSON.stringify({X: this.mostrar.posX, Y: this.mostrar.posY}));
 		},
 		fixCalcScreen(porcentajeX, porcentajeY, calc_in, calc_btn, calc, calcTransform = {X: 'translateX(0%)', Y: 'translateY(0%)'}, moveX = 0, moveY = 0){//Acomoda la calculadora cuando no cabe en la pantalla
 
@@ -403,6 +341,37 @@ Vue.component('calculadora', {
 			    }
 
 			    calc_in[0].style.transform = calcTransform.X + " " + calcTransform.Y;
+			}
+		},
+		resolverOperaciones(operacion, valor_aux, index_actual){
+
+			for(i = 0; i < valor_aux.length && index_actual != '-1'; i++){
+				index_actual = valor_aux.findIndex(element => element == operacion);
+
+				if(index_actual != '-1'){
+					num1 = valor_aux[index_actual - 1];
+					num2 = valor_aux[index_actual + 1];
+					
+					if(typeof num2 !== 'undefined'){
+						valor_aux.splice(index_actual - 1, 2);
+
+						switch (operacion) {
+							case '*':
+								valor_aux[index_actual - 1] = num1 * num2;
+								break;
+							case '/':
+								valor_aux[index_actual - 1] = num1 / num2;
+								break;
+							case '-':
+								valor_aux[index_actual - 1] = num1 - num2;
+								break;
+							case '+':
+								valor_aux[index_actual - 1] = num1 + num2;
+								break;
+						}
+					}
+
+				}
 			}
 		}
 	}

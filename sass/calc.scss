@@ -16,10 +16,6 @@ $btn_text_color: #FFFFFF;
 	font-family: 'sans-serif';
 }
 
-body{
-	background-color: black;
-}
-
 // Inicio
 .calculadora{
 	position: fixed;
@@ -30,11 +26,16 @@ body{
 	min-height: 60px;
 	transform-origin: top;
 	transition-duration: 0.01s;
+	z-index: 100;
 	@extend %box-sizing-el;
 }
 
-.calculadora *{
+.calculadora :not(.calc__btn--open-icon):not(.calc__btn--sign-delete){
 	@extend %box-sizing-el;
+}
+
+.calc__btn--sign-delete{
+	box-sizing:border-box;
 }
 
 .calculadora *:focus{

@@ -1,10 +1,6 @@
-.calculadora :not(.calc__btn--open-icon), .calculadora {
+.calculadora :not(.calc__btn--open-icon):not(.calc__btn--sign-delete), .calculadora {
   box-sizing: border-box;
   font-family: "sans-serif";
-}
-
-body {
-  background-color: black;
 }
 
 .calculadora {
@@ -16,6 +12,11 @@ body {
   min-height: 60px;
   transform-origin: top;
   transition-duration: 0.01s;
+  z-index: 100;
+}
+
+.calc__btn--sign-delete {
+  box-sizing: border-box;
 }
 
 .calculadora *:focus {
@@ -135,3 +136,5 @@ body {
   max-height: 0vh;
   opacity: 0;
 }
+
+/*# sourceMappingURL=calc.css.map */

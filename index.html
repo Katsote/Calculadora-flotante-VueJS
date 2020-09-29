@@ -13,11 +13,28 @@
 	<script type="text/javascript" src="componentes/calculator.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/calc.css">
 </head>
-<body>
+<body style="background-color: rgba(30,50,70,0.5); color: rgba(10,30,50,1)">
+	<!-- Iniciamos la calculadora -->
 	<div id="app">
 		<calculadora></calculadora>
 	</div>
 	
+	<!-- Página de ejemplo -->
+	<div class="example-site" style="display: flex; flex-direction: column; align-items: center; min-height: 100vh;">
+		<div class="container" style="width: 700px; max-width: 100%; display:flex; flex-direction: column; justify-content: space-between; min-height: inherit">
+			<header>
+				<center><h1>This is a Example Site</h1></center>
+			</header>
+			<div class="content">
+				<p>Lorem, ipsum dolor sit amet, consectetur adipisicing elit. Laborum aliquid ipsam dolores officiis deserunt non corporis, atque nesciunt molestias facere eveniet! Mollitia et corporis eligendi dignissimos. Odit soluta nemo voluptates. Lorem ipsum dolor, sit amet, consectetur adipisicing elit. Voluptates repellat libero veritatis nemo odio quasi, cumque temporibus beatae dolorum recusandae officiis voluptatum qui explicabo nihil. Aperiam esse magnam, harum. Vel.</p>
+			</div>
+
+			<div class="content2">
+				<p></p>
+			</div>
+		</div>
+	</div>
+
 	<script>
 		new Vue({
 			el: '#app'
