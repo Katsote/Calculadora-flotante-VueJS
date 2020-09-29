@@ -67,6 +67,7 @@ Vue.component('calculadora', {
 		if(Os == 'null'){
 			this.move = false;
 		} else{
+			alert(navigator.platform)
 			alert(Os)
 		}
 		
