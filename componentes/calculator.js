@@ -62,12 +62,12 @@ Vue.component('calculadora', {
 	},
 	mounted(){
 		// Revisamos si es un movil o una pc
-		let Os = (navigator.platform.match(/Window/i)) || (navigator.platform.match(/Linux/i)) || (navigator.platform.match(/Mac/i));
+		let Os = (navigator.appVersion.match(/Window/i)) || (navigator.appVersion.match(/Linux/i)) || (navigator.appVersion.match(/Mac/i));
 
 		if(Os == 'null'){
 			this.move = false;
 		} else{
-			alert(navigator.platform)
+			alert(navigator.appVersion)
 			alert(Os)
 		}
 		
