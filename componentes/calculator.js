@@ -66,6 +66,9 @@ Vue.component('calculadora', {
 
 		if(Os == 'null'){
 			this.move = false;
+		} else{
+			alert(Os);
+			alert('no');
 		}
 		
 		// Buscamos la posicion guardada
