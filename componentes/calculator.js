@@ -62,12 +62,12 @@ Vue.component('calculadora', {
 	},
 	mounted(){
 		// Revisamos si es un movil o una pc
-		let Os = (navigator.userAgent.match(/Window/i)) || (navigator.userAgent.match(/Linux/i)) || (navigator.userAgent.match(/Mac/i))
+		let Os = (navigator.platform.match(/Window/i)) || (navigator.platform.match(/Linux/i)) || (navigator.platform.match(/Mac/i));
 
 		if(Os == 'null'){
 			this.move = false;
 		} else{
-			alert(Os);
+			alert(Os)
 		}
 		
 		// Buscamos la posicion guardada
