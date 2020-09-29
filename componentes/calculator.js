@@ -86,6 +86,8 @@ Vue.component('calculadora', {
 					calc[0].style.top = this.posY;
 					calc[0].style.right = 'unset';
 				    calc[0].style.bottom = 'unset';
+
+				    alert('posicionando');
 				}
 			}
 		}
@@ -295,6 +297,8 @@ Vue.component('calculadora', {
 			    this.mostrar.posX = calc[0].style.left;
 			    this.mostrar.posY = calc[0].style.top;
 				localStorage.setItem('calcPos', JSON.stringify({X: this.mostrar.posX, Y: this.mostrar.posY}));
+
+				alert('guardado');
 			} else{
 				this.mostrar.estado = !this.mostrar.estado;	
 			}
